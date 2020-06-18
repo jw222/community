@@ -3,7 +3,7 @@ package com.jw22.community.dto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class User {
+public class UserDTO {
     private String name;
     private Long id;
     private String bio;
