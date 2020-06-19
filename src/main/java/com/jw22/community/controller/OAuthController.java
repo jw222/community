@@ -11,7 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @Controller
@@ -34,25 +36,30 @@ public class OAuthController {
     @GetMapping("/callback")
     public String callback(@RequestParam(value="code") String code,
                            @RequestParam(value="state") String state,
-                           HttpServletRequest request) {
+                           HttpServletRequest request,
+                           HttpServletResponse response) {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setCode(code);
         accessTokenDTO.setRedirect_uri(redirectUri);
         accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setClient_secret(clientSecret);
         accessTokenDTO.setState(state);
-        String token = gitHubProvider.getToken(accessTokenDTO);
-        UserDTO userDTO = gitHubProvider.getUser(token);
+        String accessToken = gitHubProvider.getToken(accessTokenDTO);
+        UserDTO userDTO = gitHubProvider.getUser(accessToken);
         if (userDTO != null) {
-            // write cookie and session information
+            // write session
             UserModel userModel = new UserModel();
+            String token = UUID.randomUUID().toString();
             userModel.setAccountId(String.valueOf(userDTO.getId()));
             userModel.setName(userDTO.getName());
-            userModel.setToken(UUID.randomUUID().toString());
+            userModel.setToken(token);
             userModel.setCreateTime(System.currentTimeMillis());
             userModel.setModifyTime(userModel.getCreateTime());
             userMapper.insert(userModel);
-            request.getSession().setAttribute("user", userDTO);
+
+            // write cookie
+            response.addCookie(new Cookie("token", token));
+            request.getSession().setAttribute("user", userModel);
             return "redirect:/";
         } else {
             // login again
