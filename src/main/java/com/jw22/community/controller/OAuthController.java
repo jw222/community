@@ -55,6 +55,7 @@ public class OAuthController {
             userModel.setToken(token);
             userModel.setCreateTime(System.currentTimeMillis());
             userModel.setModifyTime(userModel.getCreateTime());
+            userModel.setProfilePath(userDTO.getAvatar_url());
             userMapper.insert(userModel);
 
             // write cookie

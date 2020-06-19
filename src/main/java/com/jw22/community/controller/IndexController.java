@@ -32,7 +32,6 @@ public class IndexController {
                 }
             }
         }
-        System.out.println(request.getSession().getAttribute("user"));
         return "index";
     }
 }
