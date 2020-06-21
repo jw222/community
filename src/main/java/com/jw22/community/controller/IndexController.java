@@ -1,10 +1,7 @@
 package com.jw22.community.controller;
 
 import com.jw22.community.dto.PaginationDTO;
-import com.jw22.community.dto.QuestionDTO;
-import com.jw22.community.mapper.QuestionMapper;
 import com.jw22.community.mapper.UserMapper;
-import com.jw22.community.model.QuestionModel;
 import com.jw22.community.model.UserModel;
 import com.jw22.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 public class IndexController {

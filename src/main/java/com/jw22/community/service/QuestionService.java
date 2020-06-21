@@ -21,10 +21,9 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
-    public PaginationDTO list(Integer page, Integer size) {
-        Integer offset = size * (page - 1);
-
-        List<QuestionModel> questions = questionMapper.list(offset, size);
+    private PaginationDTO _setPagination(List<QuestionModel> questions,
+                                        Integer page,
+                                        Integer totalPages) {
         List<QuestionDTO> questionDTOs = new ArrayList<>();
         PaginationDTO paginationDTO = new PaginationDTO();
         for (QuestionModel question: questions) {
@@ -36,8 +35,6 @@ public class QuestionService {
         }
 
         paginationDTO.setQuestions(questionDTOs);
-        double totalQuestions = questionMapper.count();
-        int totalPages = (int) Math.ceil(totalQuestions / (double) size);
         paginationDTO.setTotalPages(totalPages);
         paginationDTO.setShowPrev(page > 1);
         paginationDTO.setShowNext(page < totalPages);
@@ -67,5 +64,23 @@ public class QuestionService {
         paginationDTO.setPages(pages);
 
         return paginationDTO;
+    }
+
+    public PaginationDTO list(Integer page, Integer size) {
+        Integer offset = size * (page - 1);
+        int totalQuestions = questionMapper.count();
+        int totalPages = (int) Math.ceil((double) totalQuestions / (double) size);
+
+        List<QuestionModel> questions = questionMapper.list(offset, totalPages);
+        return _setPagination(questions, page, size);
+    }
+
+    public PaginationDTO list(Integer userId, Integer page, Integer size) {
+        Integer offset = size * (page - 1);
+        int totalQuestions = questionMapper.countByUserId(userId);
+        int totalPages = (int) Math.ceil((double) totalQuestions / (double) size);
+
+        List<QuestionModel> questions = questionMapper.listByUserId(userId, offset, size);
+        return _setPagination(questions, page, totalPages);
     }
 }

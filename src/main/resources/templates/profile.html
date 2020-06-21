@@ -1,11 +1,11 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>My Community</title>
+    <title th:text="${sectionName}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
@@ -13,13 +13,12 @@
 <body>
 <div th:insert="navigation :: navbar"></div>
 <div class="container-fluid py-5 px-5">
-    <div class="row main">
+    <div class="row main profile">
         <div class="col-md-9 col-xs-12 border-right border-light">
-            <h3>Explore</h3>
+            <h3 th:text="${sectionName}"></h3>
             <hr>
             <ul class="list-unstyled">
                 <li class="media" style="margin: 15px" th:each="question : ${paginationDTO.getQuestions()}">
-                    <img class="align-self-start profileImage rounded mr-1" th:src="${question.getUserModel().getProfilePath()}" alt="Profile Image">
                     <div class="media-body">
                         <h5 class="mt-0" th:text="${question.getTitle()}"></h5>
                         <span th:text="${question.getDescription()}"></span><br>
@@ -35,31 +34,37 @@
             </ul>
         </div>
         <div class="col-md-3 col-xs-12">
-            <h3>Hot Topics</h3>
-            Lists of hot topics here...
+            <div class="list-group verticalNav">
+                <a href="/profile/questions" th:class="${section.equals('questions')} ? 'active list-group-item' : 'list-group-item'">
+                    My Questions
+                </a>
+                <a href="/profile/replies" th:class="${section.equals('replies')} ? 'active list-group-item' : 'list-group-item'">
+                    My Replies
+                </a>
+            </div>
         </div>
         <hr>
         <nav aria-label="Page navigation" class="main">
             <ul class="pagination">
                 <li class="page-item" th:if="${paginationDTO.isShowFirst()}">
-                    <a class="page-link" href="/?page=1&size=5">&laquo;</a>
+                    <a class="page-link" th:href="@{'/profile/'+${section}(page=1)}">&laquo;</a>
                 </li>
                 <li class="page-item" th:if="${paginationDTO.isShowPrev()}">
-                    <a class="page-link" th:href="@{'/?page='+${paginationDTO.getCurrPage()-1}+'&size=5'}">Prev</a>
+                    <a class="page-link" th:href="@{'/profile/'+${section}(page=${paginationDTO.getCurrPage()-1})}">Prev</a>
                 </li>
                 <th:block th:each="page : ${paginationDTO.getPages()}">
                     <li class="page-item" th:if="${paginationDTO.getCurrPage() != page}">
-                        <a class="page-link" th:href="@{'/?page='+${page}+'&size=5'}" th:text="${page}"></a>
+                        <a class="page-link" th:href="@{'/profile/'+${section}(page=${page})}" th:text="${page}"></a>
                     </li>
                     <li class="page-item active" th:if="${paginationDTO.getCurrPage().equals(page)}">
                         <a class="page-link" href="#" th:text="${page}"></a>
                     </li>
                 </th:block>
                 <li class="page-item" th:if="${paginationDTO.isShowNext()}">
-                    <a class="page-link" th:href="@{'/?page='+${paginationDTO.getCurrPage()+1}+'&size=5'}">Next</a>
+                    <a class="page-link" th:href="@{'/profile/'+${section}(page=${paginationDTO.getCurrPage()+1})}">Next</a>
                 </li>
                 <li class="page-item" th:if="${paginationDTO.isShowEnd()}">
-                    <a class="page-link" th:href="@{'/?page='+${paginationDTO.getTotalPages()}+'&size=5'}">&raquo;</a>
+                    <a class="page-link" th:href="@{'/profile/'+${section}(page=${paginationDTO.getTotalPages()})}">&raquo;</a>
                 </li>
             </ul>
         </nav>
