@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -22,6 +23,17 @@ public class PublishController {
         return "publish";
     }
 
+    @GetMapping("/publish/{questionId}")
+    public String edit(@PathVariable(name = "questionId") Integer questionId,
+                       Model model) {
+        QuestionModel questionModel = questionMapper.getById(questionId);
+        model.addAttribute("title", questionModel.getTitle());
+        model.addAttribute("description", questionModel.getDescription());
+        model.addAttribute("tag", questionModel.getTag());
+
+        return "publish";
+    }
+
     @PostMapping("/publish")
     public String doPublish(@RequestParam("title") String title,
                             @RequestParam("description") String description,
@@ -32,6 +44,7 @@ public class PublishController {
                             Model model) {
         model.addAttribute("title", title);
         model.addAttribute("description", description);
+        model.addAttribute("tag", tag);
 
         UserModel user = (UserModel) request.getSession().getAttribute("user");
         if (user == null) {

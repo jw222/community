@@ -41,10 +41,10 @@
                 <div class="form-group">
                     <label for="tag">Select Tag</label>
                     <select class="selectpicker" multiple id="tag" name="tag" data-live-search="true">
-                        <option selected="selected">No Tag</option>
-                        <option>Tag 1</option>
-                        <option>Tag 2</option>
-                        <option>Tag 3</option>
+                        <option th:selected="${tag == null || tag.contains('No Tag')}">No Tag</option>
+                        <option th:selected="${tag.contains('Tag 1')}">Tag 1</option>
+                        <option th:selected="${tag.contains('Tag 2')}">Tag 2</option>
+                        <option th:selected="${tag.contains('Tag 3')}">Tag 3</option>
                     </select>
                 </div>
                 <div class="form-group form-check">

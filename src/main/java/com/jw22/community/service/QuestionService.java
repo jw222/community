@@ -83,4 +83,15 @@ public class QuestionService {
         List<QuestionModel> questions = questionMapper.listByUserId(userId, offset, size);
         return _setPagination(questions, page, totalPages);
     }
+
+    public QuestionDTO getById(Integer id) {
+        QuestionModel questionModel = questionMapper.getById(id);
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(questionModel, questionDTO);
+        return questionDTO;
+    }
+
+    public void incrementView(Integer id) {
+        questionMapper.incrementView(id);
+    }
 }

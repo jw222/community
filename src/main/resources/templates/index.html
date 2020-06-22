@@ -18,10 +18,10 @@
             <h3>Explore</h3>
             <hr>
             <ul class="list-unstyled">
-                <li class="media" style="margin: 15px" th:each="question : ${paginationDTO.getQuestions()}">
+                <li class="media" style="margin: 15px 15px 30px;" th:each="question : ${paginationDTO.getQuestions()}">
                     <img class="align-self-start profileImage rounded mr-1" th:src="${question.getUserModel().getProfilePath()}" alt="Profile Image">
                     <div class="media-body">
-                        <h5 class="mt-0" th:text="${question.getTitle()}"></h5>
+                        <a th:href="@{'/question/'+${question.getId()}}"><h5 class="mt-0" th:text="${question.getTitle()}"></h5></a>
                         <span th:text="${question.getDescription()}"></span><br>
                         <span class="text-secondary">
                             <i class="fa fa-comment"></i> <span th:text="${question.getCommentCount()}"></span> &emsp;

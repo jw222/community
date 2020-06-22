@@ -1,10 +1,8 @@
 package com.jw22.community.mapper;
 
+import com.jw22.community.dto.QuestionDTO;
 import com.jw22.community.model.QuestionModel;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,4 +25,10 @@ public interface QuestionMapper {
 
     @Select("select count(1) from question where creatorId = #{userId}")
     Integer countByUserId(@Param("userId") Integer userId);
+
+    @Select("select * from question where id = #{questionId}")
+    QuestionModel getById(@Param("questionId") Integer questionId);
+
+    @Update("update question set viewCount = viewCount + 1 where id = #{questionId}")
+    void incrementView(@Param("questionId") Integer questionId);
 }

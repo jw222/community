@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title th:text="${question.getTitle()}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:insert="navigation :: navbar"></div>
+<div class="container-fluid py-5 px-5">
+    <div class="row main">
+        <div class="col-md-9 col-xs-12 border-right border-light">
+            <h3 th:text="${question.getTitle()}"></h3>
+            <hr>
+            <p th:text="${question.getDescription()}"></p>
+            <a th:if="${session.user != null && session.user.getId() == question.getCreatorId()}"
+               th:href="@{'/publish/'+${question.getId()}}">
+                <i class="fa fa-pencil">Edit Question</i>
+            </a>
+            <i class="fa fa-comment"></i> <span th:text="${question.getCommentCount()}"></span> &emsp;
+            <i class="fa fa-eye"></i> <span th:text="${question.getViewCount()}"></span> &emsp;
+            <i class="fa fa-arrow-up"></i> <span th:text="${question.getUpVote()}"></span> &emsp;
+            <i class="fa fa-arrow-down"></i> <span th:text="${question.getDownVote()}"></span> &emsp;
+            <span class="badge badge-info">Posted on: <span th:text="${#dates.format(question.getCreateTime(), 'dd MMMM yyyy HH:mm')}"></span></span>
+            <hr>
+        </div>
+        <div class="col-md-3 col-xs-12">
+            <h5>Related Topics...</h5>
+        </div>
+    </div>
+</div>
+</body>
+</html>
