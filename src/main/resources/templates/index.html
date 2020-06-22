@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
@@ -45,21 +45,21 @@
                     <a class="page-link" href="/?page=1&size=5">&laquo;</a>
                 </li>
                 <li class="page-item" th:if="${paginationDTO.isShowPrev()}">
-                    <a class="page-link" th:href="@{'/?page='+${paginationDTO.getCurrPage()-1}+'&size=5'}">Prev</a>
+                    <a class="page-link" th:href="@{'/?page='+${paginationDTO.getCurrPage()-1}}">Prev</a>
                 </li>
                 <th:block th:each="page : ${paginationDTO.getPages()}">
                     <li class="page-item" th:if="${paginationDTO.getCurrPage() != page}">
-                        <a class="page-link" th:href="@{'/?page='+${page}+'&size=5'}" th:text="${page}"></a>
+                        <a class="page-link" th:href="@{'/?page='+${page}}" th:text="${page}"></a>
                     </li>
                     <li class="page-item active" th:if="${paginationDTO.getCurrPage().equals(page)}">
                         <a class="page-link" href="#" th:text="${page}"></a>
                     </li>
                 </th:block>
                 <li class="page-item" th:if="${paginationDTO.isShowNext()}">
-                    <a class="page-link" th:href="@{'/?page='+${paginationDTO.getCurrPage()+1}+'&size=5'}">Next</a>
+                    <a class="page-link" th:href="@{'/?page='+${paginationDTO.getCurrPage()+1}}">Next</a>
                 </li>
                 <li class="page-item" th:if="${paginationDTO.isShowEnd()}">
-                    <a class="page-link" th:href="@{'/?page='+${paginationDTO.getTotalPages()}+'&size=5'}">&raquo;</a>
+                    <a class="page-link" th:href="@{'/?page='+${paginationDTO.getTotalPages()}}">&raquo;</a>
                 </li>
             </ul>
         </nav>

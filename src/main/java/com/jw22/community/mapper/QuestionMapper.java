@@ -31,4 +31,7 @@ public interface QuestionMapper {
 
     @Update("update question set viewCount = viewCount + 1 where id = #{questionId}")
     void incrementView(@Param("questionId") Integer questionId);
+
+    @Update("update question set title = #{title}, description = #{description}, modifyTime = #{modifyTime}, tag = #{tag} where id = #{id}")
+    void update(QuestionModel questionModel);
 }

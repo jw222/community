@@ -1,8 +1,10 @@
 package com.jw22.community.controller;
 
+import com.jw22.community.dto.QuestionDTO;
 import com.jw22.community.mapper.QuestionMapper;
 import com.jw22.community.model.QuestionModel;
 import com.jw22.community.model.UserModel;
+import com.jw22.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class PublishController {
     @Autowired
-    private QuestionMapper questionMapper;
+    private QuestionService questionService;
 
     @GetMapping("/publish")
     public String publish() {
@@ -26,10 +28,11 @@ public class PublishController {
     @GetMapping("/publish/{questionId}")
     public String edit(@PathVariable(name = "questionId") Integer questionId,
                        Model model) {
-        QuestionModel questionModel = questionMapper.getById(questionId);
+        QuestionDTO questionModel = questionService.getById(questionId);
         model.addAttribute("title", questionModel.getTitle());
         model.addAttribute("description", questionModel.getDescription());
         model.addAttribute("tag", questionModel.getTag());
+        model.addAttribute("id", questionModel.getId());
 
         return "publish";
     }
@@ -40,6 +43,7 @@ public class PublishController {
                             @RequestParam("tag") String tag,
                             @RequestParam(value="fileUpload", required=false) String fileUpload,
                             @RequestParam(value="anonymous", required=false) String anonymous,
+                            @RequestParam(value="id", required=false) Integer id,
                             HttpServletRequest request,
                             Model model) {
         model.addAttribute("title", title);
@@ -68,7 +72,8 @@ public class PublishController {
         questionModel.setCreateTime(System.currentTimeMillis());
         questionModel.setModifyTime(questionModel.getCreateTime());
         questionModel.setCreatorId(user.getId());
-        questionMapper.insert(questionModel);
+        questionModel.setId(id);
+        questionService.createOrUpdate(questionModel);
         return "redirect:/";
     }
 }

@@ -21,12 +21,17 @@
             <a th:if="${session.user != null && session.user.getId() == question.getCreatorId()}"
                th:href="@{'/publish/'+${question.getId()}}">
                 <i class="fa fa-pencil">Edit Question</i>
-            </a>
+            </a><br>
             <i class="fa fa-comment"></i> <span th:text="${question.getCommentCount()}"></span> &emsp;
             <i class="fa fa-eye"></i> <span th:text="${question.getViewCount()}"></span> &emsp;
             <i class="fa fa-arrow-up"></i> <span th:text="${question.getUpVote()}"></span> &emsp;
             <i class="fa fa-arrow-down"></i> <span th:text="${question.getDownVote()}"></span> &emsp;
-            <span class="badge badge-info">Posted on: <span th:text="${#dates.format(question.getCreateTime(), 'dd MMMM yyyy HH:mm')}"></span></span>
+            <span class="badge badge-info">
+                Posted on: <span th:text="${#dates.format(question.getCreateTime(), 'dd MMMM yyyy HH:mm')}"></span>
+            </span>
+            <span class="badge badge-info" th:if="${question.getCreateTime() != question.getModifyTime()}">
+                Editted on: <span th:text="${#dates.format(question.getModifyTime(), 'dd MMMM yyyy HH:mm')}"></span>
+            </span>
             <hr>
         </div>
         <div class="col-md-3 col-xs-12">

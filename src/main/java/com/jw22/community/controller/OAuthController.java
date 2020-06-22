@@ -5,6 +5,7 @@ import com.jw22.community.dto.UserDTO;
 import com.jw22.community.mapper.UserMapper;
 import com.jw22.community.model.UserModel;
 import com.jw22.community.provider.GitHubProvider;
+import com.jw22.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -22,7 +23,7 @@ public class OAuthController {
     private GitHubProvider gitHubProvider;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
     @Value("${github.client.id}")
     private String clientId;
@@ -53,10 +54,8 @@ public class OAuthController {
             userModel.setAccountId(String.valueOf(userDTO.getId()));
             userModel.setName(userDTO.getName());
             userModel.setToken(token);
-            userModel.setCreateTime(System.currentTimeMillis());
-            userModel.setModifyTime(userModel.getCreateTime());
             userModel.setProfilePath(userDTO.getAvatar_url());
-            userMapper.insert(userModel);
+            userService.createOrUpdate(userModel);
 
             // write cookie
             response.addCookie(new Cookie("token", token));
@@ -66,5 +65,15 @@ public class OAuthController {
             // login again
             return "redirect:/";
         }
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response) {
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
     }
 }

@@ -71,8 +71,8 @@ public class QuestionService {
         int totalQuestions = questionMapper.count();
         int totalPages = (int) Math.ceil((double) totalQuestions / (double) size);
 
-        List<QuestionModel> questions = questionMapper.list(offset, totalPages);
-        return _setPagination(questions, page, size);
+        List<QuestionModel> questions = questionMapper.list(offset, size);
+        return _setPagination(questions, page, totalPages);
     }
 
     public PaginationDTO list(Integer userId, Integer page, Integer size) {
@@ -93,5 +93,13 @@ public class QuestionService {
 
     public void incrementView(Integer id) {
         questionMapper.incrementView(id);
+    }
+
+    public void createOrUpdate(QuestionModel questionModel) {
+        if (questionModel.getId() == null) {
+            questionMapper.insert(questionModel);
+        } else {
+            questionMapper.update(questionModel);
+        }
     }
 }

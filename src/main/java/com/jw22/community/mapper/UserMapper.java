@@ -1,14 +1,8 @@
 package com.jw22.community.mapper;
 
 import com.jw22.community.model.UserModel;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Map;
 
 @Component
 @Mapper
@@ -22,4 +16,10 @@ public interface UserMapper {
 
     @Select("select * from user where id = #{creatorId}")
     UserModel findById(@Param("creatorId") Integer creatorId);
+
+    @Select("select * from user where accountId = #{accountId}")
+    UserModel findByAccountId(@Param("accountId") String accountId);
+
+    @Update("update user set name=#{name}, token=#{token}, modifyTime=#{modifyTime}, profilePath=#{profilePath} where id=#{id}")
+    void update(UserModel user);
 }
