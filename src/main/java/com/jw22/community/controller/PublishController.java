@@ -25,7 +25,7 @@ public class PublishController {
     }
 
     @GetMapping("/publish/{questionId}")
-    public String edit(@PathVariable(name = "questionId") Integer questionId,
+    public String edit(@PathVariable(name = "questionId") Long questionId,
                        Model model) {
         QuestionDTO questionModel = questionService.getById(questionId);
         model.addAttribute("title", questionModel.getTitle());
@@ -42,7 +42,7 @@ public class PublishController {
                             @RequestParam("tag") String tag,
                             @RequestParam(value="fileUpload", required=false) String fileUpload,
                             @RequestParam(value="anonymous", required=false) String anonymous,
-                            @RequestParam(value="id", required=false) Integer id,
+                            @RequestParam(value="id", required=false) Long id,
                             HttpServletRequest request,
                             Model model) {
         model.addAttribute("title", title);

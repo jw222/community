@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class QuestionDTO {
-    private Integer id;
+    private Long id;
     private String title;
     private String description;
     private Long createTime;
     private Long modifyTime;
-    private Integer creatorId;
+    private Long creatorId;
     private Integer commentCount;
     private Integer viewCount;
     private Integer upVote;

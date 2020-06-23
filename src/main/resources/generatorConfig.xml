@@ -29,11 +29,8 @@
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 
-        <table tableName="user" domainObjectName="User" >
-            <property name="useActualColumnNames" value="true"/>
-        </table>
+        <table tableName="user" domainObjectName="User" ></table>
         <table tableName="question" domainObjectName="Question" >
-            <property name="useActualColumnNames" value="true"/>
             <columnOverride column="description" jdbcType="VARCHAR"></columnOverride>
         </table>
     </context>
