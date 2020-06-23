@@ -4,4 +4,6 @@ import com.jw22.community.model.Question;
 
 public interface QuestionMapperExt {
     int incrementView(Question question);
+
+    int incrementCommentCount(Question question);
 }

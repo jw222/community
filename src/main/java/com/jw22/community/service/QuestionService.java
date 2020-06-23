@@ -117,10 +117,10 @@ public class QuestionService {
 
     public void createOrUpdate(Question question) {
         if (question.getId() == null) {
-            questionMapper.insert(question);
+            questionMapper.insertSelective(question);
         } else {
             question.setModifyTime(System.currentTimeMillis());
-            int success = questionMapper.updateByPrimaryKey(question);
+            int success = questionMapper.updateByPrimaryKeySelective(question);
             if (success != 1) {
                 throw new CustomizedException(CustomizedErrorCode.QUESTION_NOT_FOUND);
             }
