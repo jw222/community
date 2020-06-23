@@ -30,7 +30,7 @@
                 Posted on: <span th:text="${#dates.format(question.getCreateTime(), 'dd MMMM yyyy HH:mm')}"></span>
             </span>
             <span class="badge badge-info" th:if="${question.getCreateTime() != question.getModifyTime()}">
-                Editted on: <span th:text="${#dates.format(question.getModifyTime(), 'dd MMMM yyyy HH:mm')}"></span>
+                Edited on: <span th:text="${#dates.format(question.getModifyTime(), 'dd MMMM yyyy HH:mm')}"></span>
             </span>
             <hr>
         </div>

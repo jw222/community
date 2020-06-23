@@ -4,8 +4,10 @@ import com.jw22.community.dto.PaginationDTO;
 import com.jw22.community.dto.QuestionDTO;
 import com.jw22.community.mapper.QuestionMapper;
 import com.jw22.community.mapper.UserMapper;
-import com.jw22.community.model.QuestionModel;
-import com.jw22.community.model.UserModel;
+import com.jw22.community.model.Question;
+import com.jw22.community.model.QuestionExample;
+import com.jw22.community.model.User;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,16 +23,16 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
-    private PaginationDTO _setPagination(List<QuestionModel> questions,
+    private PaginationDTO _setPagination(List<Question> questions,
                                         Integer page,
                                         Integer totalPages) {
         List<QuestionDTO> questionDTOs = new ArrayList<>();
         PaginationDTO paginationDTO = new PaginationDTO();
-        for (QuestionModel question: questions) {
-            UserModel userModel = userMapper.findById(question.getCreatorId());
+        for (Question question: questions) {
+            User user = userMapper.selectByPrimaryKey(question.getCreatorId());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
-            questionDTO.setUserModel(userModel);
+            questionDTO.setUser(user);
             questionDTOs.add(questionDTO);
         }
 
@@ -67,39 +69,47 @@ public class QuestionService {
     }
 
     public PaginationDTO list(Integer page, Integer size) {
-        Integer offset = size * (page - 1);
-        int totalQuestions = questionMapper.count();
+        int offset = size * (page - 1);
+        int totalQuestions = (int) questionMapper.countByExample(new QuestionExample());
         int totalPages = (int) Math.ceil((double) totalQuestions / (double) size);
 
-        List<QuestionModel> questions = questionMapper.list(offset, size);
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
         return _setPagination(questions, page, totalPages);
     }
 
     public PaginationDTO list(Integer userId, Integer page, Integer size) {
-        Integer offset = size * (page - 1);
-        int totalQuestions = questionMapper.countByUserId(userId);
+        int offset = size * (page - 1);
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria()
+                .andCreatorIdEqualTo(userId);
+        int totalQuestions = (int) questionMapper.countByExample(questionExample);
         int totalPages = (int) Math.ceil((double) totalQuestions / (double) size);
 
-        List<QuestionModel> questions = questionMapper.listByUserId(userId, offset, size);
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
         return _setPagination(questions, page, totalPages);
     }
 
     public QuestionDTO getById(Integer id) {
-        QuestionModel questionModel = questionMapper.getById(id);
+        Question question = questionMapper.selectByPrimaryKey(id);
         QuestionDTO questionDTO = new QuestionDTO();
-        BeanUtils.copyProperties(questionModel, questionDTO);
+        BeanUtils.copyProperties(question, questionDTO);
         return questionDTO;
     }
 
     public void incrementView(Integer id) {
-        questionMapper.incrementView(id);
+        Question dbQuestion = questionMapper.selectByPrimaryKey(id);
+        Question question = new Question();
+        question.setId(id);
+        question.setViewCount(dbQuestion.getViewCount() + 1);
+        questionMapper.updateByPrimaryKeySelective(question);
     }
 
-    public void createOrUpdate(QuestionModel questionModel) {
-        if (questionModel.getId() == null) {
-            questionMapper.insert(questionModel);
+    public void createOrUpdate(Question question) {
+        if (question.getId() == null) {
+            questionMapper.insert(question);
         } else {
-            questionMapper.update(questionModel);
+            question.setModifyTime(System.currentTimeMillis());
+            questionMapper.updateByPrimaryKey(question);
         }
     }
 }

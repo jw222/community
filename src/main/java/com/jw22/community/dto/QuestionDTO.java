@@ -1,6 +1,6 @@
 package com.jw22.community.dto;
 
-import com.jw22.community.model.UserModel;
+import com.jw22.community.model.User;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -18,5 +18,5 @@ public class QuestionDTO {
     private Integer upVote;
     private Integer downVote;
     private String tag;
-    private UserModel userModel;
+    private User user;
 }

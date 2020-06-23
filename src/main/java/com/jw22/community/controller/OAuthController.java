@@ -2,8 +2,7 @@ package com.jw22.community.controller;
 
 import com.jw22.community.dto.AccessTokenDTO;
 import com.jw22.community.dto.UserDTO;
-import com.jw22.community.mapper.UserMapper;
-import com.jw22.community.model.UserModel;
+import com.jw22.community.model.User;
 import com.jw22.community.provider.GitHubProvider;
 import com.jw22.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,17 +48,17 @@ public class OAuthController {
         UserDTO userDTO = gitHubProvider.getUser(accessToken);
         if (userDTO != null) {
             // write session
-            UserModel userModel = new UserModel();
+            User user = new User();
             String token = UUID.randomUUID().toString();
-            userModel.setAccountId(String.valueOf(userDTO.getId()));
-            userModel.setName(userDTO.getName());
-            userModel.setToken(token);
-            userModel.setProfilePath(userDTO.getAvatar_url());
-            userService.createOrUpdate(userModel);
+            user.setAccountId(String.valueOf(userDTO.getId()));
+            user.setName(userDTO.getName());
+            user.setToken(token);
+            user.setProfilePath(userDTO.getAvatar_url());
+            userService.createOrUpdate(user);
 
             // write cookie
             response.addCookie(new Cookie("token", token));
-            request.getSession().setAttribute("user", userModel);
+            request.getSession().setAttribute("user", user);
             return "redirect:/";
         } else {
             // login again

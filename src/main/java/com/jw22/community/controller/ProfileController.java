@@ -1,7 +1,7 @@
 package com.jw22.community.controller;
 
 import com.jw22.community.dto.PaginationDTO;
-import com.jw22.community.model.UserModel;
+import com.jw22.community.model.User;
 import com.jw22.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +23,7 @@ public class ProfileController {
                           @RequestParam(value = "size", defaultValue = "5") Integer size,
                           HttpServletRequest request,
                           Model model) {
-        UserModel user = (UserModel) request.getSession().getAttribute("user");
+        User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
             return "redirect:/";
         }

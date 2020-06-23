@@ -1,9 +1,8 @@
 package com.jw22.community.controller;
 
 import com.jw22.community.dto.QuestionDTO;
-import com.jw22.community.mapper.QuestionMapper;
-import com.jw22.community.model.QuestionModel;
-import com.jw22.community.model.UserModel;
+import com.jw22.community.model.Question;
+import com.jw22.community.model.User;
 import com.jw22.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,7 +49,7 @@ public class PublishController {
         model.addAttribute("description", description);
         model.addAttribute("tag", tag);
 
-        UserModel user = (UserModel) request.getSession().getAttribute("user");
+        User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
             model.addAttribute("error", "User not logged in");
             return "publish";
@@ -65,15 +64,15 @@ public class PublishController {
             return "publish";
         }
 
-        QuestionModel questionModel = new QuestionModel();
-        questionModel.setTitle(title);
-        questionModel.setDescription(description);
-        questionModel.setTag(tag);
-        questionModel.setCreateTime(System.currentTimeMillis());
-        questionModel.setModifyTime(questionModel.getCreateTime());
-        questionModel.setCreatorId(user.getId());
-        questionModel.setId(id);
-        questionService.createOrUpdate(questionModel);
+        Question question = new Question();
+        question.setTitle(title);
+        question.setDescription(description);
+        question.setTag(tag);
+        question.setCreateTime(System.currentTimeMillis());
+        question.setModifyTime(question.getCreateTime());
+        question.setCreatorId(user.getId());
+        question.setId(id);
+        questionService.createOrUpdate(question);
         return "redirect:/";
     }
 }

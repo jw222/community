@@ -2,7 +2,7 @@ package com.jw22.community.controller;
 
 import com.jw22.community.dto.QuestionDTO;
 import com.jw22.community.mapper.UserMapper;
-import com.jw22.community.model.UserModel;
+import com.jw22.community.model.User;
 import com.jw22.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,8 +23,8 @@ public class QuestionController {
                            Model model) {
         questionService.incrementView(id);
         QuestionDTO questionDTO = questionService.getById(id);
-        UserModel user = userMapper.findById(questionDTO.getCreatorId());
-        questionDTO.setUserModel(user);
+        User user = userMapper.selectByPrimaryKey(questionDTO.getCreatorId());
+        questionDTO.setUser(user);
         model.addAttribute("question", questionDTO);
         return "question";
     }
