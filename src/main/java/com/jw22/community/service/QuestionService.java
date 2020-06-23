@@ -5,6 +5,7 @@ import com.jw22.community.dto.QuestionDTO;
 import com.jw22.community.exception.CustomizedErrorCode;
 import com.jw22.community.exception.CustomizedException;
 import com.jw22.community.mapper.QuestionMapper;
+import com.jw22.community.mapper.QuestionMapperExt;
 import com.jw22.community.mapper.UserMapper;
 import com.jw22.community.model.Question;
 import com.jw22.community.model.QuestionExample;
@@ -21,6 +22,9 @@ import java.util.List;
 public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionMapperExt questionMapperExt;
 
     @Autowired
     private UserMapper userMapper;
@@ -102,14 +106,13 @@ public class QuestionService {
     }
 
     public void incrementView(Integer id) {
-        Question dbQuestion = questionMapper.selectByPrimaryKey(id);
-        if (dbQuestion == null) {
-            throw new CustomizedException(CustomizedErrorCode.QUESTION_NOT_FOUND);
-        }
         Question question = new Question();
         question.setId(id);
-        question.setViewCount(dbQuestion.getViewCount() + 1);
-        questionMapper.updateByPrimaryKeySelective(question);
+        question.setViewCount(1);
+        int success = questionMapperExt.incrementView(question);
+        if (success != 1) {
+            throw new CustomizedException(CustomizedErrorCode.QUESTION_NOT_FOUND);
+        }
     }
 
     public void createOrUpdate(Question question) {
