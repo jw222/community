@@ -2,6 +2,8 @@ package com.jw22.community.service;
 
 import com.jw22.community.dto.PaginationDTO;
 import com.jw22.community.dto.QuestionDTO;
+import com.jw22.community.exception.CustomizedErrorCode;
+import com.jw22.community.exception.CustomizedException;
 import com.jw22.community.mapper.QuestionMapper;
 import com.jw22.community.mapper.UserMapper;
 import com.jw22.community.model.Question;
@@ -91,6 +93,9 @@ public class QuestionService {
 
     public QuestionDTO getById(Integer id) {
         Question question = questionMapper.selectByPrimaryKey(id);
+        if (question == null) {
+            throw new CustomizedException(CustomizedErrorCode.QUESTION_NOT_FOUND);
+        }
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
         return questionDTO;
@@ -98,6 +103,9 @@ public class QuestionService {
 
     public void incrementView(Integer id) {
         Question dbQuestion = questionMapper.selectByPrimaryKey(id);
+        if (dbQuestion == null) {
+            throw new CustomizedException(CustomizedErrorCode.QUESTION_NOT_FOUND);
+        }
         Question question = new Question();
         question.setId(id);
         question.setViewCount(dbQuestion.getViewCount() + 1);
@@ -109,7 +117,10 @@ public class QuestionService {
             questionMapper.insert(question);
         } else {
             question.setModifyTime(System.currentTimeMillis());
-            questionMapper.updateByPrimaryKey(question);
+            int success = questionMapper.updateByPrimaryKey(question);
+            if (success != 1) {
+                throw new CustomizedException(CustomizedErrorCode.QUESTION_NOT_FOUND);
+            }
         }
     }
 }
