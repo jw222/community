@@ -28,7 +28,7 @@
 
   <update id="incrementCommentCount" parameterType="com.jw22.community.model.Question">
     update question
-    set command_count = #{commentCount,jdbcType=INTEGER} + comment_count
+    set comment_count = #{commentCount,jdbcType=INTEGER} + comment_count
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

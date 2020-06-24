@@ -9,32 +9,53 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="/js/community.js"></script>
 </head>
 <body>
 <div th:insert="navigation :: navbar"></div>
 <div class="container-fluid py-5 px-5">
     <div class="row main">
         <div class="col-md-9 col-xs-12 border-right border-light">
-            <h3 th:text="${question.getTitle()}"></h3>
-            <hr>
-            <p th:text="${question.getDescription()}"></p>
-            <a th:if="${session.user != null && session.user.getId() == question.getCreatorId()}"
-               th:href="@{'/publish/'+${question.getId()}}">
-                <i class="fa fa-pencil">Edit Question</i>
-            </a><br>
-            <i class="fa fa-comment"></i> <span th:text="${question.getCommentCount()}"></span> &emsp;
-            <i class="fa fa-eye"></i> <span th:text="${question.getViewCount()}"></span> &emsp;
-            <i class="fa fa-arrow-up"></i> <span th:text="${question.getUpVote()}"></span> &emsp;
-            <i class="fa fa-arrow-down"></i> <span th:text="${question.getDownVote()}"></span> &emsp;
-            <span class="badge badge-info">
+            <div>
+                <h3 th:text="${question.getTitle()}"></h3>
+                <hr>
+                <p th:text="${question.getDescription()}"></p>
+                <a th:if="${session.user != null && session.user.getId() == question.getCreatorId()}"
+                   th:href="@{'/publish/'+${question.getId()}}">
+                    <i class="fa fa-pencil">Edit Question</i>
+                </a><br>
+                <i class="fa fa-comment"></i> <span th:text="${question.getCommentCount()}"></span> &emsp;
+                <i class="fa fa-eye"></i> <span th:text="${question.getViewCount()}"></span> &emsp;
+                <i class="fa fa-arrow-up"></i> <span th:text="${question.getUpVote()}"></span> &emsp;
+                <i class="fa fa-arrow-down"></i> <span th:text="${question.getDownVote()}"></span> &emsp;
+                <span class="badge badge-info">
                 Posted on: <span th:text="${#dates.format(question.getCreateTime(), 'dd MMMM yyyy HH:mm')}"></span>
             </span>
-            <span class="badge badge-info" th:if="${question.getCreateTime() != question.getModifyTime()}">
+                <span class="badge badge-info" th:if="${question.getCreateTime() != question.getModifyTime()}">
                 Edited on: <span th:text="${#dates.format(question.getModifyTime(), 'dd MMMM yyyy HH:mm')}"></span>
             </span>
+            </div>
             <hr>
+            <p>
+                <button class="btn btn-light border border-dark" type="button" data-toggle="collapse" data-target="#replyForm" aria-expanded="false" aria-controls="replyForm">
+                    Write A Comment
+                </button>
+            </p>
+            <div class="collapse" id="replyForm">
+                <input type="hidden" name="parentId" id="parentId" th:value="${question.getId()}">
+                <label for="comment"><h5>Description</h5></label>
+                <textarea class="form-control" id="comment" name="comment" rows="6"></textarea>
+                <button type="submit" class="btn btn-success" style="margin-top: 20px" onclick="reply()">Reply</button>
+            </div>
         </div>
         <div class="col-md-3 col-xs-12">
+            <h5>Author</h5>
+            <div class="media">
+                <img class="align-self-start profileImage rounded mr-1" th:src="${question.getUser().getProfilePath()}" alt="Profile Image">
+                <div class="media-body">
+                    <h5 th:text="${question.getUser().getName()}"></h5>
+                </div>
+            </div>
             <h5>Related Topics...</h5>
         </div>
     </div>

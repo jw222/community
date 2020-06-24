@@ -10,6 +10,7 @@ import com.jw22.community.model.Comment;
 import com.jw22.community.model.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentService {
@@ -22,6 +23,7 @@ public class CommentService {
     @Autowired
     private QuestionMapperExt questionMapperExt;
 
+    @Transactional
     public void insert(Comment comment) {
         if (comment.getParentId() == null) {
             throw new CustomizedException(CustomizedErrorCode.COMMENT_NO_PARENT);
