@@ -1,6 +1,6 @@
 package com.jw22.community.controller;
 
-import com.jw22.community.dto.CommentDTO;
+import com.jw22.community.dto.CommentCreateDTO;
 import com.jw22.community.dto.ResultDTO;
 import com.jw22.community.exception.CustomizedErrorCode;
 import com.jw22.community.model.Comment;
@@ -21,19 +21,20 @@ public class CommentController {
 
     @ResponseBody
     @PostMapping("/comment")
-    public Object post(@RequestBody CommentDTO commentDTO,
+    public Object post(@RequestBody CommentCreateDTO commentCreateDTO,
                        HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
             return ResultDTO.errorOf(CustomizedErrorCode.NOT_LOGGED_IN);
         }
         Comment comment = new Comment();
-        comment.setParentId(commentDTO.getParentId());
-        comment.setDescription(commentDTO.getDescription());
-        comment.setParentType(commentDTO.getParentType());
+        comment.setParentId(commentCreateDTO.getParentId());
+        comment.setDescription(commentCreateDTO.getDescription());
+        comment.setParentType(commentCreateDTO.getParentType());
         comment.setCreateTime(System.currentTimeMillis());
         comment.setModifyTime(comment.getCreateTime());
         comment.setCreatorId(user.getId());
+        comment.setReplyTo(commentCreateDTO.getReplyTo());
         commentService.insert(comment);
         return ResultDTO.errorOf(CustomizedErrorCode.OK);
     }

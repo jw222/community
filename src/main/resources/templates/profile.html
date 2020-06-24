@@ -18,7 +18,7 @@
             <h3 th:text="${sectionName}"></h3>
             <hr>
             <ul class="list-unstyled">
-                <li class="media" style="margin: 15px 15px 30px;" th:each="question : ${paginationDTO.getQuestions()}">
+                <li class="media mediaMargin" th:each="question : ${paginationDTO.getQuestions()}">
                     <div class="media-body">
                         <a th:href="@{'/question/'+${question.getId()}}"><h5 class="mt-0" th:text="${question.getTitle()}"></h5></a>
                         <span th:text="${question.getDescription()}"></span><br>
@@ -30,6 +30,7 @@
                             <span class="badge badge-info">Posted on: <span th:text="${#dates.format(question.getCreateTime(), 'dd MMMM yyyy HH:mm')}"></span></span>
                         </span>
                     </div>
+                    <hr>
                 </li>
             </ul>
         </div>
@@ -44,7 +45,7 @@
             </div>
         </div>
         <hr>
-        <nav aria-label="Page navigation" class="main">
+        <nav aria-label="Page navigation" class="main" th:if="${paginationDTO.getTotalPages() > 1}">
             <ul class="pagination">
                 <li class="page-item" th:if="${paginationDTO.isShowFirst()}">
                     <a class="page-link" th:href="@{'/profile/'+${section}(page=1)}">&laquo;</a>

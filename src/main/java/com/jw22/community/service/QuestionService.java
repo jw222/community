@@ -43,35 +43,7 @@ public class QuestionService {
         }
 
         paginationDTO.setQuestions(questionDTOs);
-        paginationDTO.setTotalPages(totalPages);
-        paginationDTO.setShowPrev(page > 1);
-        paginationDTO.setShowNext(page < totalPages);
-        paginationDTO.setShowFirst(page > 3 && totalPages > 5);
-        paginationDTO.setShowEnd(page < totalPages - 2 && totalPages > 5);
-        paginationDTO.setCurrPage(page);
-        int start, end;
-        if (totalPages <= 5) {
-            start = 1;
-            end = totalPages;
-        } else {
-            if (page - 2 < 1) {
-                start = 1;
-                end = 5;
-            } else if (page + 2 > totalPages) {
-                start = totalPages - 4;
-                end = totalPages;
-            } else {
-                start = page - 2;
-                end = page + 2;
-            }
-        }
-        List<Integer> pages = new ArrayList<>();
-        for (int i = start; i <= end; i++) {
-            pages.add(i);
-        }
-        paginationDTO.setPages(pages);
-
-        return paginationDTO;
+        return PaginationDTO.setProperties(paginationDTO, page, totalPages);
     }
 
     public PaginationDTO list(Integer page, Integer size) {
@@ -119,7 +91,7 @@ public class QuestionService {
         if (question.getId() == null) {
             questionMapper.insertSelective(question);
         } else {
-            question.setModifyTime(System.currentTimeMillis());
+            question.setCreateTime(null);
             int success = questionMapper.updateByPrimaryKeySelective(question);
             if (success != 1) {
                 throw new CustomizedException(CustomizedErrorCode.QUESTION_NOT_FOUND);

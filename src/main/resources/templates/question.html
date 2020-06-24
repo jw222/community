@@ -19,43 +19,136 @@
             <div>
                 <h3 th:text="${question.getTitle()}"></h3>
                 <hr>
-                <p th:text="${question.getDescription()}"></p>
+                <pre th:text="${question.getDescription()}"></pre>
                 <a th:if="${session.user != null && session.user.getId() == question.getCreatorId()}"
                    th:href="@{'/publish/'+${question.getId()}}">
-                    <i class="fa fa-pencil">Edit Question</i>
+                    <i class="fa fa-pencil"> Edit Question</i>
                 </a><br>
                 <i class="fa fa-comment"></i> <span th:text="${question.getCommentCount()}"></span> &emsp;
                 <i class="fa fa-eye"></i> <span th:text="${question.getViewCount()}"></span> &emsp;
                 <i class="fa fa-arrow-up"></i> <span th:text="${question.getUpVote()}"></span> &emsp;
                 <i class="fa fa-arrow-down"></i> <span th:text="${question.getDownVote()}"></span> &emsp;
                 <span class="badge badge-info">
-                Posted on: <span th:text="${#dates.format(question.getCreateTime(), 'dd MMMM yyyy HH:mm')}"></span>
-            </span>
+                    Posted on: <span th:text="${#dates.format(question.getCreateTime(), 'dd MMMM yyyy HH:mm')}"></span>
+                </span>
                 <span class="badge badge-info" th:if="${question.getCreateTime() != question.getModifyTime()}">
-                Edited on: <span th:text="${#dates.format(question.getModifyTime(), 'dd MMMM yyyy HH:mm')}"></span>
-            </span>
+                    Edited on: <span th:text="${#dates.format(question.getModifyTime(), 'dd MMMM yyyy HH:mm')}"></span>
+                </span>
             </div>
             <hr>
-            <p>
-                <button class="btn btn-light border border-dark" type="button" data-toggle="collapse" data-target="#replyForm" aria-expanded="false" aria-controls="replyForm">
-                    Write A Comment
-                </button>
-            </p>
-            <div class="collapse" id="replyForm">
-                <input type="hidden" name="parentId" id="parentId" th:value="${question.getId()}">
-                <label for="comment"><h5>Description</h5></label>
-                <textarea class="form-control" id="comment" name="comment" rows="6"></textarea>
-                <button type="submit" class="btn btn-success" style="margin-top: 20px" onclick="reply(1)">Reply</button>
+            <h4>Replies</h4>
+            <hr>
+            <ul class="list-unstyled">
+                <li class="media mediaMargin" th:each="comment : ${paginationDTO.getComments()}">
+                    <img class="align-self-start profileImage rounded mr-1" th:src="${comment.getUser().getProfilePath()}" alt="Profile Image">
+                    <div class="media-body" style="margin-left: 15px">
+                        <pre style="white-space: pre-line" th:text="${comment.getDescription()}"></pre>
+                        <span class="text-secondary">
+                            <button class="btn btn-sm btn-light border border-dark" type="button" data-toggle="collapse"
+                                    th:attr="data-target='#replyForm'+${comment.id}" aria-expanded="false" aria-controls="replyForm">
+                                Reply
+                            </button> &emsp;
+                            <button class="btn btn-sm btn-light border border-dark" type="button" data-toggle="collapse"
+                                    th:if="${comment.getSubComments() != null}"
+                                    th:attr="data-target='#subReplies'+${comment.id}" aria-expanded="false" aria-controls="subReply">
+                                See Replies
+                            </button> &emsp;
+                            <i class="fa fa-comment"></i> <span th:text="${comment.getSubComments() == null ? 0 : comment.getSubComments().size()}"></span> &emsp;
+                            <i class="fa fa-arrow-up"></i> <span th:text="${comment.getUpVote()}"></span> &emsp;
+                            <i class="fa fa-arrow-down"></i> <span th:text="${comment.getDownVote()}"></span> &emsp;
+                            <span class="badge badge-secondary">
+                                Posted on: <span th:text="${#dates.format(comment.getCreateTime(), 'dd MMMM yyyy HH:mm')}"></span>
+                                by <span th:text="${comment.getUser().getName()}"></span>
+                            </span>
+                        </span>
+                        <div class="collapse" th:attr="id='replyForm'+${comment.id}">
+                            <input type="hidden" th:attr="id='parentIdOf'+${comment.id}" th:value="${comment.id}">
+                            <label th:attr="for='#reply'+${comment.id}"></label>
+                            <textarea class="form-control" th:attr="id='reply'+${comment.id}" rows="6"></textarea>
+                            <button type="submit" class="btn btn-success" style="margin-top: 20px; margin-bottom: 20px" th:attr="onclick='reply(2, '+${comment.id}+')'">Reply</button>
+                        </div>
+                        <div class="collapse" th:attr="id='subReplies'+${comment.id}" th:if="${comment.getSubComments() != null}">
+                            <ul class="list-unstyled">
+                                <li class="media mediaMarginNested" th:each="subComment : ${comment.getSubComments()}">
+                                    <img class="align-self-start profileImage rounded mr-1" th:src="${subComment.getUser().getProfilePath()}" alt="Profile Image">
+                                    <div class="media-body" style="margin-left: 15px">
+                                        <h5 th:text="'Reply To: '+${subComment.replyToUser.name}"></h5>
+                                        <pre style="white-space: pre-line" th:text="${subComment.getDescription()}"></pre>
+                                        <span class="text-secondary">
+                                        <button class="btn btn-sm btn-light border border-dark" type="button" data-toggle="collapse"
+                                                th:attr="data-target='#replyForm'+${subComment.id}" aria-expanded="false" aria-controls="replyForm">
+                                            Reply
+                                        </button> &emsp;
+                                        <i class="fa fa-arrow-up"></i> <span th:text="${subComment.getUpVote()}"></span> &emsp;
+                                        <i class="fa fa-arrow-down"></i> <span th:text="${subComment.getDownVote()}"></span> &emsp;
+                                        <span class="badge badge-secondary">
+                                            Posted on: <span th:text="${#dates.format(subComment.getCreateTime(), 'dd MMMM yyyy HH:mm')}"></span>
+                                            by <span th:text="${subComment.getUser().getName()}"></span>
+                                        </span>
+                                    </span>
+                                        <div class="collapse" th:attr="id='replyForm'+${subComment.id}">
+                                            <input type="hidden" th:attr="id='parentIdOf'+${subComment.id}" th:value="${comment.id}">
+                                            <label th:attr="for='#reply'+${subComment.id}"></label>
+                                            <textarea class="form-control" th:attr="id='reply'+${subComment.id}" rows="6"></textarea>
+                                            <button type="submit" class="btn btn-success" style="margin-top: 20px; margin-bottom: 20px" th:attr="onclick='reply(2, '+${subComment.id}+')'">Reply</button>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr>
+                </li>
+            </ul>
+            <hr>
+            <nav aria-label="Page navigation" class="main" th:if="${paginationDTO.getTotalPages() > 1}">
+                <ul class="pagination">
+                    <li class="page-item" th:if="${paginationDTO.isShowFirst()}">
+                        <a class="page-link" th:href="@{'/question/'+${question.getId()}+'?page=1'}">&laquo;</a>
+                    </li>
+                    <li class="page-item" th:if="${paginationDTO.isShowPrev()}">
+                        <a class="page-link" th:href="@{'/question/'+${question.getId()}+'?page='+${paginationDTO.getCurrPage()-1}}">Prev</a>
+                    </li>
+                    <th:block th:each="page : ${paginationDTO.getPages()}">
+                        <li class="page-item" th:if="${paginationDTO.getCurrPage() != page}">
+                            <a class="page-link" th:href="@{'/question/'+${question.getId()}+'?page='+${page}}" th:text="${page}"></a>
+                        </li>
+                        <li class="page-item active" th:if="${paginationDTO.getCurrPage().equals(page)}">
+                            <a class="page-link" href="#" th:text="${page}"></a>
+                        </li>
+                    </th:block>
+                    <li class="page-item" th:if="${paginationDTO.isShowNext()}">
+                        <a class="page-link" th:href="@{'/question/'+${question.getId()}+'?page='+${paginationDTO.getCurrPage()+1}}">Next</a>
+                    </li>
+                    <li class="page-item" th:if="${paginationDTO.isShowEnd()}">
+                        <a class="page-link" th:href="@{'/question/'+${question.getId()}+'?page='+${paginationDTO.getTotalPages()}}">&raquo;</a>
+                    </li>
+                </ul>
+            </nav>
+            <div>
+                <p>
+                    <button class="btn btn-light border border-dark" type="button" data-toggle="collapse" data-target="#commentForm" aria-expanded="false" aria-controls="commentForm">
+                        Write A Comment
+                    </button>
+                </p>
+                <div class="collapse" id="commentForm">
+                    <input type="hidden" id="parentId" th:value="${question.getId()}">
+                    <label for="comment"><h5>Description</h5></label>
+                    <textarea class="form-control" id="comment" rows="6"></textarea>
+                    <button type="submit" class="btn btn-success" style="margin-top: 20px" onclick="reply(1, 0)">Reply</button>
+                </div>
             </div>
         </div>
         <div class="col-md-3 col-xs-12">
             <h5>Author</h5>
-            <div class="media">
+            <div class="media" style="margin: 10px">
                 <img class="align-self-start profileImage rounded mr-1" th:src="${question.getUser().getProfilePath()}" alt="Profile Image">
                 <div class="media-body">
                     <h5 th:text="${question.getUser().getName()}"></h5>
                 </div>
             </div>
+            <hr>
             <h5>Related Topics...</h5>
         </div>
     </div>

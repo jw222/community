@@ -10,6 +10,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </head>
+<script type="application/javascript">
+    window.onload = function() {
+        let closePage = window.localStorage.getItem("closePage");
+        if (closePage === "true") {
+            window.close();
+            window.localStorage.removeItem("closePage");
+        }
+    }
+</script>
 <body>
 <div th:insert="navigation :: navbar"></div>
 <div class="container-fluid py-5 px-5">
@@ -18,7 +27,7 @@
             <h3>Explore</h3>
             <hr>
             <ul class="list-unstyled">
-                <li class="media" style="margin: 15px 15px 30px;" th:each="question : ${paginationDTO.getQuestions()}">
+                <li class="media mediaMargin" th:each="question : ${paginationDTO.getQuestions()}">
                     <img class="align-self-start profileImage rounded mr-1" th:src="${question.getUser().getProfilePath()}" alt="Profile Image">
                     <div class="media-body">
                         <a th:href="@{'/question/'+${question.getId()}}"><h5 class="mt-0" th:text="${question.getTitle()}"></h5></a>
@@ -28,9 +37,13 @@
                             <i class="fa fa-eye"></i> <span th:text="${question.getViewCount()}"></span> &emsp;
                             <i class="fa fa-arrow-up"></i> <span th:text="${question.getUpVote()}"></span> &emsp;
                             <i class="fa fa-arrow-down"></i> <span th:text="${question.getDownVote()}"></span> &emsp;
-                            <span class="badge badge-info">Posted on: <span th:text="${#dates.format(question.getCreateTime(), 'dd MMMM yyyy HH:mm')}"></span></span>
+                            <span class="badge badge-info">
+                                Posted on: <span th:text="${#dates.format(question.getCreateTime(), 'dd MMMM yyyy HH:mm')}"></span>
+                                by <span th:text="${question.getUser().getName()}"></span>
+                            </span>
                         </span>
                     </div>
+                    <hr>
                 </li>
             </ul>
         </div>
@@ -39,10 +52,10 @@
             Lists of hot topics here...
         </div>
         <hr>
-        <nav aria-label="Page navigation" class="main">
+        <nav aria-label="Page navigation" class="main" th:if="${paginationDTO.getTotalPages() > 1}">
             <ul class="pagination">
                 <li class="page-item" th:if="${paginationDTO.isShowFirst()}">
-                    <a class="page-link" href="/?page=1&size=5">&laquo;</a>
+                    <a class="page-link" href="/?page=1">&laquo;</a>
                 </li>
                 <li class="page-item" th:if="${paginationDTO.isShowPrev()}">
                     <a class="page-link" th:href="@{'/?page='+${paginationDTO.getCurrPage()-1}}">Prev</a>
