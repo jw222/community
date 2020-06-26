@@ -1,5 +1,6 @@
 package com.jw22.community.controller;
 
+import com.jw22.community.cache.TagCache;
 import com.jw22.community.dto.QuestionDTO;
 import com.jw22.community.model.Question;
 import com.jw22.community.model.User;
@@ -20,7 +21,8 @@ public class PublishController {
     private QuestionService questionService;
 
     @GetMapping("/publish")
-    public String publish() {
+    public String publish(Model model) {
+        model.addAttribute("tagCache", TagCache.get());
         return "publish";
     }
 
@@ -31,6 +33,7 @@ public class PublishController {
         model.addAttribute("title", questionModel.getTitle());
         model.addAttribute("description", questionModel.getDescription());
         model.addAttribute("tag", questionModel.getTag());
+        model.addAttribute("tagCache", TagCache.get());
         model.addAttribute("id", questionModel.getId());
 
         return "publish";
@@ -48,6 +51,7 @@ public class PublishController {
         model.addAttribute("title", title);
         model.addAttribute("description", description);
         model.addAttribute("tag", tag);
+        model.addAttribute("tagCache", TagCache.get());
 
         User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
@@ -61,6 +65,10 @@ public class PublishController {
         }
         if (description.equals("")) {
             model.addAttribute("error", "Description must not be empty");
+            return "publish";
+        }
+        if (tag.equals("")) {
+            model.addAttribute("tag", "Tag must not be empty");
             return "publish";
         }
 

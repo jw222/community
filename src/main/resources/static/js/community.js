@@ -46,3 +46,16 @@ function reply(type, replyTo) {
         contentType: "application/json"
     })
 }
+
+function selectTag(e) {
+    var value = e.getAttribute("data-tag");
+    var old = $("#tag").val();
+    var oldSplit = old.split(",");
+    if (!oldSplit.includes(value)) {
+        if (old !== "") {
+            $("#tag").val(old + "," + value);
+        } else {
+            $("#tag").val(value);
+        }
+    }
+}

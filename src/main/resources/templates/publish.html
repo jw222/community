@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
-    <script src="../static/js/community.js"></script>
+    <script src="/js/community.js"></script>
 </head>
 <body>
 <div th:insert="navigation :: navbar"></div>
@@ -40,9 +40,35 @@
                     <input type="file" class="form-control-file" id="fileUpload" name="fileUpload">
                 </div>
                 <div class="form-group">
-                    <label for="tag">Select Tag</label>
-                    <input class="form-control" id="tag" name="tag" th:value="${tag}">
-                    <small class="form-text text-muted">Please enter the tags with comma separated</small>
+                    <label for="tag">Select Tags</label>
+                    <input type="text" class="form-control" th:value="${tag}" id="tag" name="tag" autocomplete="off" placeholder="split with comma">
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-lang-tab" data-toggle="tab" href="#nav-lang"
+                               role="tab" aria-controls="nav-lang" aria-selected="true">Language</a>
+                            <a class="nav-item nav-link" id="nav-database-tab" data-toggle="tab" href="#nav-database"
+                               role="tab" aria-controls="nav-database" aria-selected="false">Database</a>
+                            <a class="nav-item nav-link" id="nav-tool-tab" data-toggle="tab" href="#nav-tool"
+                               role="tab" aria-controls="nav-tool" aria-selected="false">Tool</a>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-lang" role="tabpanel" aria-labelledby="nav-lang-tab">
+                            <span th:each="currTag: ${tagCache.get('language')}">
+                                <span class="badge badge-pill badge-primary" th:text="${currTag}" onclick="selectTag(this)" th:data-tag="${currTag}"></span> &ensp;
+                            </span>
+                        </div>
+                        <div class="tab-pane fade" id="nav-database" role="tabpanel" aria-labelledby="nav-database-tab">
+                            <span th:each="currTag: ${tagCache.get('database')}">
+                                <span class="badge badge-pill badge-primary" th:text="${currTag}" onclick="selectTag(this)" th:data-tag="${currTag}"></span> &ensp;
+                            </span>
+                        </div>
+                        <div class="tab-pane fade" id="nav-tool" role="tabpanel" aria-labelledby="nav-tool-tab">
+                            <span th:each="currTag: ${tagCache.get('tool')}">
+                                <span class="badge badge-pill badge-primary" th:text="${currTag}" onclick="selectTag(this)" th:data-tag="${currTag}"></span> &ensp;
+                            </span>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group form-check">
                     <input type="checkbox" class="form-check-input" id="anonymous" name="anonymous">
