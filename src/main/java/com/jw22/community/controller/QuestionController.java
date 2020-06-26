@@ -37,11 +37,16 @@ public class QuestionController {
         QuestionDTO questionDTO = questionService.getById(id);
         User user = userMapper.selectByPrimaryKey(questionDTO.getCreatorId());
         questionDTO.setUser(user);
+        model.addAttribute("question", questionDTO);
+
+        // set related questions
+        List<QuestionDTO> relatedQuestions = questionService.selectRelated(questionDTO);
+        model.addAttribute("relatedQuestions", relatedQuestions);
 
         // set replies
         PaginationDTO paginationDTO = commentService.list(questionDTO.getId(), page, size);
         model.addAttribute("paginationDTO", paginationDTO);
-        model.addAttribute("question", questionDTO);
+
         return "question";
     }
 }

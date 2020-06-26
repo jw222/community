@@ -18,7 +18,7 @@
             <h3 th:text="${sectionName}"></h3>
             <hr>
             <ul class="list-unstyled">
-                <li class="media mediaMargin" th:each="question : ${paginationDTO.getQuestions()}">
+                <li class="media mediaMargin border-bottom border-light" th:each="question : ${paginationDTO.getQuestions()}">
                     <div class="media-body">
                         <a th:href="@{'/question/'+${question.getId()}}"><h5 class="mt-0" th:text="${question.getTitle()}"></h5></a>
                         <span th:text="${question.getDescription()}"></span><br>
@@ -27,6 +27,9 @@
                             <i class="fa fa-eye"></i> <span th:text="${question.getViewCount()}"></span> &emsp;
                             <i class="fa fa-arrow-up"></i> <span th:text="${question.getUpVote()}"></span> &emsp;
                             <i class="fa fa-arrow-down"></i> <span th:text="${question.getDownVote()}"></span> &emsp;
+                            <span class="badge badge-pill badge-success" th:each="tag: ${question.getTag().split(',')}">
+                                <span th:text="${tag}"></span>
+                            </span> &emsp;
                             <span class="badge badge-info">Posted on: <span th:text="${#dates.format(question.getCreateTime(), 'dd MMMM yyyy HH:mm')}"></span></span>
                         </span>
                     </div>

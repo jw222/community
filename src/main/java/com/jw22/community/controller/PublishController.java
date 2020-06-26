@@ -70,6 +70,7 @@ public class PublishController {
         question.setTag(tag);
         question.setCreateTime(System.currentTimeMillis());
         question.setModifyTime(question.getCreateTime());
+        question.setLastActivity(question.getCreateTime());
         question.setCreatorId(user.getId());
         question.setId(id);
         questionService.createOrUpdate(question);

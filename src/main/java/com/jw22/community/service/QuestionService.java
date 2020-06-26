@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -50,8 +51,10 @@ public class QuestionService {
         int offset = size * (page - 1);
         int totalQuestions = (int) questionMapper.countByExample(new QuestionExample());
         int totalPages = (int) Math.ceil((double) totalQuestions / (double) size);
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("last_activity desc");
 
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
         return _setPagination(questions, page, totalPages);
     }
 
@@ -60,6 +63,7 @@ public class QuestionService {
         QuestionExample questionExample = new QuestionExample();
         questionExample.createCriteria()
                 .andCreatorIdEqualTo(userId);
+        questionExample.setOrderByClause("last_activity desc");
         int totalQuestions = (int) questionMapper.countByExample(questionExample);
         int totalPages = (int) Math.ceil((double) totalQuestions / (double) size);
 
@@ -92,10 +96,37 @@ public class QuestionService {
             questionMapper.insertSelective(question);
         } else {
             question.setCreateTime(null);
+            question.setLastActivity(null);
             int success = questionMapper.updateByPrimaryKeySelective(question);
             if (success != 1) {
                 throw new CustomizedException(CustomizedErrorCode.QUESTION_NOT_FOUND);
             }
         }
+    }
+
+    public List<QuestionDTO> selectRelated(QuestionDTO questionDTO) {
+        if (questionDTO.getTag() == null || questionDTO.getTag().equals("")) {
+            return new ArrayList<>();
+        }
+        String[] tags = questionDTO.getTag().split(",");
+        String regexp = String.join("|", tags);
+        Question question = new Question();
+        question.setId(questionDTO.getId());
+        question.setTag(regexp);
+
+        List<Question> questions = questionMapperExt.selectRelated(question);
+
+        return questions.stream().map(q -> {
+            QuestionDTO questionDTO1 = new QuestionDTO();
+            BeanUtils.copyProperties(q, questionDTO1);
+            return questionDTO1;
+        }).collect(Collectors.toList());
+    }
+
+    public void updateActivity(Long parentId) {
+        Question question = new Question();
+        question.setId(parentId);
+        question.setLastActivity(System.currentTimeMillis());
+        questionMapperExt.updateActivity(question);
     }
 }

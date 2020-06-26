@@ -27,7 +27,7 @@
             <h3>Explore</h3>
             <hr>
             <ul class="list-unstyled">
-                <li class="media mediaMargin" th:each="question : ${paginationDTO.getQuestions()}">
+                <li class="media mediaMargin border-bottom border-light" th:each="question : ${paginationDTO.getQuestions()}">
                     <img class="align-self-start profileImage rounded mr-1" th:src="${question.getUser().getProfilePath()}" alt="Profile Image">
                     <div class="media-body">
                         <a th:href="@{'/question/'+${question.getId()}}"><h5 class="mt-0" th:text="${question.getTitle()}"></h5></a>
@@ -37,6 +37,9 @@
                             <i class="fa fa-eye"></i> <span th:text="${question.getViewCount()}"></span> &emsp;
                             <i class="fa fa-arrow-up"></i> <span th:text="${question.getUpVote()}"></span> &emsp;
                             <i class="fa fa-arrow-down"></i> <span th:text="${question.getDownVote()}"></span> &emsp;
+                            <span th:each="tag: ${question.getTag().split(',')}">
+                                <span class="badge badge-pill badge-success" th:text="${tag}"></span> &ensp;
+                            </span> &emsp;
                             <span class="badge badge-info">
                                 Posted on: <span th:text="${#dates.format(question.getCreateTime(), 'dd MMMM yyyy HH:mm')}"></span>
                                 by <span th:text="${question.getUser().getName()}"></span>

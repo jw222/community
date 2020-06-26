@@ -9,6 +9,11 @@ function reply(type, replyTo) {
         comment = $("#reply"+replyTo).val();
     }
 
+    if (comment === "") {
+        alert("Message Must Not Be Empty!");
+        return;
+    }
+
     $.ajax({
         type: "POST",
         url: "/comment",
@@ -25,6 +30,7 @@ function reply(type, replyTo) {
                 } else {
                     $("#reply"+replyTo).removeClass("show").val('');
                 }
+                window.location.reload();
             } else if (response.code === 204) {
                 let accept = confirm(response.message);
                 if (accept) {

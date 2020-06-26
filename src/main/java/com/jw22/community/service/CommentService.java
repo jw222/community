@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
@@ -77,6 +75,7 @@ public class CommentService {
         commentExample.createCriteria()
                 .andParentIdEqualTo(questionId)
                 .andParentTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+        commentExample.setOrderByClause("create_time desc");
         int totalQuestions = (int) commentMapper.countByExample(commentExample);
         int totalPages = (int) Math.ceil((double) totalQuestions / (double) size);
 

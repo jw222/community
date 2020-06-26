@@ -21,9 +21,13 @@
                 <hr>
                 <pre th:text="${question.getDescription()}"></pre>
                 <a th:if="${session.user != null && session.user.getId() == question.getCreatorId()}"
-                   th:href="@{'/publish/'+${question.getId()}}">
+                   th:href="@{'/publish/'+${question.getId()}}"
+                   class="text-secondary">
                     <i class="fa fa-pencil"> Edit Question</i>
                 </a><br>
+                <span th:each="tag: ${question.getTag().split(',')}">
+                    <span class="badge badge-pill badge-success" th:text="${tag}"></span> &ensp;
+                </span><br>
                 <i class="fa fa-comment"></i> <span th:text="${question.getCommentCount()}"></span> &emsp;
                 <i class="fa fa-eye"></i> <span th:text="${question.getViewCount()}"></span> &emsp;
                 <i class="fa fa-arrow-up"></i> <span th:text="${question.getUpVote()}"></span> &emsp;
@@ -36,10 +40,10 @@
                 </span>
             </div>
             <hr>
-            <h4>Replies</h4>
+            <h4 th:text="${paginationDTO.getComments().size()}+' Replies'"></h4>
             <hr>
             <ul class="list-unstyled">
-                <li class="media mediaMargin" th:each="comment : ${paginationDTO.getComments()}">
+                <li class="media mediaMargin rounded" th:each="comment : ${paginationDTO.getComments()}">
                     <img class="align-self-start profileImage rounded mr-1" th:src="${comment.getUser().getProfilePath()}" alt="Profile Image">
                     <div class="media-body" style="margin-left: 15px">
                         <pre style="white-space: pre-line" th:text="${comment.getDescription()}"></pre>
@@ -64,12 +68,12 @@
                         <div class="collapse" th:attr="id='replyForm'+${comment.id}">
                             <input type="hidden" th:attr="id='parentIdOf'+${comment.id}" th:value="${comment.id}">
                             <label th:attr="for='#reply'+${comment.id}"></label>
-                            <textarea class="form-control" th:attr="id='reply'+${comment.id}" rows="6"></textarea>
+                            <textarea class="form-control" th:attr="id='reply'+${comment.id}" rows="3"></textarea>
                             <button type="submit" class="btn btn-success" style="margin-top: 20px; margin-bottom: 20px" th:attr="onclick='reply(2, '+${comment.id}+')'">Reply</button>
                         </div>
                         <div class="collapse" th:attr="id='subReplies'+${comment.id}" th:if="${comment.getSubComments() != null}">
                             <ul class="list-unstyled">
-                                <li class="media mediaMarginNested" th:each="subComment : ${comment.getSubComments()}">
+                                <li class="media mediaMarginNested rounded" th:each="subComment : ${comment.getSubComments()}">
                                     <img class="align-self-start profileImage rounded mr-1" th:src="${subComment.getUser().getProfilePath()}" alt="Profile Image">
                                     <div class="media-body" style="margin-left: 15px">
                                         <h5 th:text="'Reply To: '+${subComment.replyToUser.name}"></h5>
@@ -89,7 +93,7 @@
                                         <div class="collapse" th:attr="id='replyForm'+${subComment.id}">
                                             <input type="hidden" th:attr="id='parentIdOf'+${subComment.id}" th:value="${comment.id}">
                                             <label th:attr="for='#reply'+${subComment.id}"></label>
-                                            <textarea class="form-control" th:attr="id='reply'+${subComment.id}" rows="6"></textarea>
+                                            <textarea class="form-control" th:attr="id='reply'+${subComment.id}" rows="3"></textarea>
                                             <button type="submit" class="btn btn-success" style="margin-top: 20px; margin-bottom: 20px" th:attr="onclick='reply(2, '+${subComment.id}+')'">Reply</button>
                                         </div>
                                     </div>
@@ -144,12 +148,17 @@
             <h5>Author</h5>
             <div class="media" style="margin: 10px">
                 <img class="align-self-start profileImage rounded mr-1" th:src="${question.getUser().getProfilePath()}" alt="Profile Image">
-                <div class="media-body">
+                <div class="media-body ml-2">
                     <h5 th:text="${question.getUser().getName()}"></h5>
                 </div>
             </div>
             <hr>
-            <h5>Related Topics...</h5>
+            <h5>Related Topics</h5>
+            <ul class="list-unstyled">
+                <li class="list-group-item" th:each="question : ${relatedQuestions}">
+                    <a th:text="${question.getTitle()}" th:href="@{'/question/'+${question.getId()}}"></a>
+                </li>
+            </ul>
         </div>
     </div>
 </div>

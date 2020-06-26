@@ -7,7 +7,8 @@ public enum CustomizedErrorCode implements CustomizedErrorCodeInterface {
     COMMENT_NO_PARENT(203, "Comment parent not selected or original parent is deleted."),
     NOT_LOGGED_IN(204, "Please log in first"),
     SYSTEM_ERROR(205, "System error"),
-    COMMENT_TYPE_INVALID(206, "Comment type not valid");
+    COMMENT_TYPE_INVALID(206, "Comment type not valid"),
+    NO_REPLY_DESC(207, "Description is null or empty");
 
     private final Integer code;
     private final String message;
